@@ -110,9 +110,8 @@ function saveSites(sites) {
 
 async function syncSites() {
   try {
-    const response = await fetch(API_BASE + "/api/sites", {
-      method: "GET",
-      cache: "no-store",
+    const response = await fetch(`${API_BASE}/api/sites`, {
+        cache: "no-store"
     });
     if (!response.ok) throw new Error("HTTP " + response.status);
     const payload = await response.json();
@@ -210,10 +209,12 @@ async function submitCode() {
   status.textContent = "Verifying…";
   status.className = "status muted";
   try {
-    const response = await fetch(API_BASE + "/auth/validate", {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({code}),
+    const response = await fetch(`${API_BASE}/auth/validate`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ code })
     });
     const data = await response.json().catch(() => ({}));
     if (!response.ok || !data.success) throw new Error(data.detail || "Invalid code");
