@@ -2,7 +2,7 @@
 set -euo pipefail
 
 BACKEND_URL="https://access-gateway-service.onrender.com"
-RAW_BASE="https://raw.githubusercontent.com/ogarkm/access-gate/main"
+RAW_BASE="https://raw.githubusercontent.com/ogarkm/access-gateway/main"
 TARGET_DIR="${ACCESS_GATE_DIR:-$HOME/AccessGate}"
 TARGET_FILE="$TARGET_DIR/index.html"
 
