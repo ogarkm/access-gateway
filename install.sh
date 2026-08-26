@@ -4,7 +4,7 @@ set -euo pipefail
 BACKEND_URL="https://access-gateway-87wc.onrender.com/"
 RAW_BASE="https://raw.githubusercontent.com/ogarkm/access-gateway/main"
 TARGET_DIR="${ACCESS_GATE_DIR:-$HOME/AccessGate}"
-TARGET_FILE="$TARGET_DIR/index.html"
+TARGET_FILE="$TARGET_DIR/gate.html"
 
 mkdir -p "$TARGET_DIR"
 tmp="$(mktemp "$TARGET_DIR/.index.XXXXXX.html")"
