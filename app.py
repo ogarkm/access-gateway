@@ -10,15 +10,16 @@ import secrets
 import threading
 import json
 
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
 
-# The standalone local HTML is opened as file://, which presents an Origin of "null".
-# No cookies or credentials are used, so wildcard CORS is appropriate here.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
     allow_credentials=False,
-    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
