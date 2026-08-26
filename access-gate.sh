@@ -10,7 +10,7 @@ set -euo pipefail
 # locally. API/auth requests are proxied to the backend by the embedded
 # localhost Python server, so the page stays same-origin and requires no CORS.
 
-BACKEND_URL="${BACKEND_URL:-${1:-}}"
+BACKEND_URL="https://access-gateway-service.onrender.com"
 HOST="127.0.0.1"
 PORT="${PORT:-8765}"
 CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/access-gate"
