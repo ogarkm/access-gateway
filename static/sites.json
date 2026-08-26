@@ -1,18 +1,29 @@
-[
-  {
-    "name": "Animex",
-    "desc": "Stream Anime and read Manga",
-    "url": "https://animex-extension-server.onrender.com",
-    "color": "#DE541E",
-    "deprecated": true,
-    "icon": "▰"
-  },
-  {
-    "name": "Proxy (DogeUB)",
-    "desc": "Web Proxy",
-    "url": "https://dogeub.storage.googleapis.com/index.html#/search",
-    "color": "#ffffff",
-    "deprecated": true,
-    "icon": "◈"
-  }
-]
+{
+  "version": 1,
+  "sites": [
+    {
+      "name": "Animex",
+      "desc": "Stream Anime and read Manga",
+      "url": "https://animex-extension-server.onrender.com",
+      "color": "#DE541E",
+      "deprecated": true,
+      "icon": "A"
+    },
+    {
+      "name": "Proxy (DogeUB)",
+      "desc": "Web Proxy",
+      "url": "https://dogeub.storage.googleapis.com/index.html#/search",
+      "color": "#ffffff",
+      "deprecated": true,
+      "icon": "P"
+    },
+    {
+      "name": "Animax",
+      "desc": "Stream Movies, TV, Anime, Manga, Sports, and Live TV",
+      "url": "https://animax-s21j.onrender.com/",
+      "color": "#ffffff",
+      "deprecated": false,
+      "icon": "A"
+    }
+  ]
+}

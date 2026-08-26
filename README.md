@@ -1,48 +1,54 @@
-# Access Gate
+# Access Gate — Standalone Local Client
 
-Access Gate is a FastAPI authentication gate with a server-hosted site registry and a one-file local launcher.
+The local client is intentionally just one `index.html`. There is no localhost server.
 
-## Backend
+## Install / launch
 
-The backend serves the UI from `static/index.html` and exposes the current launchpad registry through:
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/ogarkm/access-gate/main/install.sh)"
+```
+
+The installer downloads the current `static/index.html` into `~/AccessGate/index.html` and opens it.
+
+The downloaded HTML then talks directly to:
 
 ```text
-GET /api/sites
+https://access-gateway-service.onrender.com
 ```
 
-The registry lives in `static/sites.json`, so changing the list no longer requires embedding the data into the HTML.
+## Sync architecture
 
-Configure the administrator secret through the `ADMIN_PASSWORD` environment variable. It is intentionally required at startup and is not committed to the repository.
+The backend exposes:
 
-Run locally:
-
-```bash
-python3 -m pip install -r requirements.txt
-export ADMIN_PASSWORD='your-secret'
-uvicorn app:app --reload
+```text
+GET  /api/sites
+POST /auth/validate
+GET  /auth/status
+GET  /retrieve/authToken
 ```
 
-## Local client
+On page load:
 
-`access-gate.sh` is completely self-contained. It:
+1. Cached sites are read from `localStorage`.
+2. The cached list is rendered immediately.
+3. `/api/sites` is fetched from the production backend with `cache: no-store`.
+4. The response replaces the cached list in `localStorage`.
+5. If the backend is unavailable, the cached list remains usable.
 
-1. downloads the latest `index.html` from the backend on every launch;
-2. keeps a local cache if the backend is temporarily unavailable;
-3. starts a localhost HTTP server;
-4. serves the cached HTML locally;
-5. proxies `/api/*`, `/auth/*`, and `/retrieve/*` to the real backend;
-6. opens the local page in the default browser.
+Authentication is never copied into the HTML. The one-time code is validated by the backend.
 
-Usage:
+## CORS
 
-```bash
-./access-gate.sh https://your-backend.example.com
+Because the local file is opened as `file://`, the browser sends an Origin of `null`. The FastAPI app therefore enables CORS for this standalone client.
+
+No cookies or credentialed requests are used, so `allow_credentials=False` is intentional.
+
+## Security
+
+Set the deployment secret as an environment variable:
+
+```text
+ADMIN_PASSWORD=...
 ```
 
-or:
-
-```bash
-BACKEND_URL=https://your-backend.example.com ./access-gate.sh
-```
-
-No Python dependencies are required for the local launcher; it only needs `bash`, `curl`, `python3`, and a browser.
+Do not use a hard-coded fallback password.

@@ -1,18 +1,26 @@
-from __future__ import annotations
-
+from fastapi import FastAPI, Query, HTTPException
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-import json
 import os
 import secrets
 import threading
+import json
 
-from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import FileResponse, JSONResponse
-from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+app = FastAPI()
 
-app = FastAPI(title="Access Gate")
+# The standalone local HTML is opened as file://, which presents an Origin of "null".
+# No cookies or credentials are used, so wildcard CORS is appropriate here.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+)
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
@@ -35,7 +43,7 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 @app.get("/")
 def serve_index():
-    return FileResponse(INDEX_FILE, headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
+    return FileResponse(INDEX_FILE)
 
 
 @app.get("/health")
@@ -44,18 +52,14 @@ def health():
 
 
 @app.get("/api/sites")
-def get_sites():
+def sites():
+    """Return the current launchpad registry."""
     with SITES_FILE.open("r", encoding="utf-8") as f:
-        sites = json.load(f)
-
-    return {
-        "version": 1,
-        "sites": sites,
-    }
+        return json.load(f)
 
 
 @app.get("/retrieve/authToken")
-def retrieve_auth_token(_: str = Query(...)):
+def retrieve_auth_token(_ : str = Query(...)):
     global active_code, expires_at
 
     if _ != ADMIN_PASSWORD:
@@ -110,4 +114,7 @@ def validate(body: ValidateBody):
         active_code = None
         expires_at = None
 
-    return JSONResponse({"success": True, "authorized": True})
+    return JSONResponse({
+        "success": True,
+        "authorized": True,
+    })
